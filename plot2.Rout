@@ -1,0 +1,41 @@
+
+R version 3.1.0 (2014-04-10) -- "Spring Dance"
+Copyright (C) 2014 The R Foundation for Statistical Computing
+Platform: x86_64-pc-linux-gnu (64-bit)
+
+R is free software and comes with ABSOLUTELY NO WARRANTY.
+You are welcome to redistribute it under certain conditions.
+Type 'license()' or 'licence()' for distribution details.
+
+  Natural language support but running in an English locale
+
+R is a collaborative project with many contributors.
+Type 'contributors()' for more information and
+'citation()' on how to cite R or R packages in publications.
+
+Type 'demo()' for some demos, 'help()' for on-line help, or
+'help.start()' for an HTML browser interface to help.
+Type 'q()' to quit R.
+
+[Previously saved workspace restored]
+
+> consumption <- read.table(unz("../exdata_data_household_power_consumption.zip", "household_power_consumption.txt"), 
++                           header = FALSE, sep = ";", skip = 66637, nrow = 2880, stringsAsFactors = F, 
++                           na.strings = "?")
+> data_head <- read.table(unz("../exdata_data_household_power_consumption.zip", "household_power_consumption.txt"), 
++                         nrow = 1, sep = ";", stringsAsFactors = F)
+> names(consumption) <- unlist(data_head)
+> consumption <- transform(consumption, Date = as.Date(Date, "%d/%m/%Y"), 
++                          Time = strptime(paste(Date, Time), 
++                                          "%d/%m/%Y %H:%M:%S"))
+> par(mfrow = c(1, 1))
+> png('plot2.png', width = 480, height = 480)
+> with(consumption, plot(Time, Global_active_power, type = "l", xlab = "", 
++                        ylab = "Global Active Power (kilowatts)"))
+> dev.off()
+pdf 
+  2 
+> 
+> proc.time()
+   user  system elapsed 
+  0.650   0.033   0.674 

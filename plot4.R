@@ -1,0 +1,23 @@
+consumption <- read.table(unz("../exdata_data_household_power_consumption.zip", "household_power_consumption.txt"), 
+                          header = FALSE, sep = ";", skip = 66637, nrow = 2880, stringsAsFactors = F, 
+                          na.strings = "?")
+data_head <- read.table(unz("../exdata_data_household_power_consumption.zip", "household_power_consumption.txt"), 
+                        nrow = 1, sep = ";", stringsAsFactors = F)
+names(consumption) <- unlist(data_head)
+consumption <- transform(consumption, Date = as.Date(Date, "%d/%m/%Y"), 
+                         Time = strptime(paste(Date, Time), 
+                                         "%d/%m/%Y %H:%M:%S"))
+
+png('plot4.png', width = 480, height = 480)
+par(mfrow = c(2, 2))
+with(consumption, plot(Time, Global_active_power, type = "l", xlab = "", 
+                       ylab = "Global Active Power"))
+with(consumption, plot(Time, Voltage, type = "l", xlab = "datetime"))
+with(consumption, {plot(Time, Sub_metering_1, type = "l", xlab = "", 
+                        ylab = "Energy sub metering")
+                   lines(Time, Sub_metering_2, col = "red")
+                   lines(Time, Sub_metering_3, col = "darkviolet")
+                   legend("topright", paste0("Sub_metering_", 1:3), 
+                          lty = 1, col = c("black", "red", "darkviolet"), box.lwd = 0)})
+with(consumption, plot(Time, Global_reactive_power, type = "l", xlab = "datetime"))
+dev.off()
